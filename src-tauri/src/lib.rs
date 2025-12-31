@@ -28,7 +28,6 @@ pub fn run() {
 
             Ok(())
         })
-        .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_shell::init())
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
@@ -44,7 +43,6 @@ fn build_tray(app: &mut App) -> Result<(), tauri::Error> {
         .menu(&build_menu(app.handle(), ACTION_DISABLE)?)
         .on_menu_event(|app, event| match event.id.as_ref() {
             QUIT_ID => {
-                println!("Quit menu item was clicked");
                 if let Some(lock) = COMMAND.get() {
                     if let Ok(mut data) = lock.lock() {
                         if let Some(child) = data.take() {
@@ -55,7 +53,6 @@ fn build_tray(app: &mut App) -> Result<(), tauri::Error> {
                 app.exit(0);
             }
             ACTION_ID => {
-                println!("Clicked action");
                 let _ = handle_action(app);
             }
             _ => unreachable!(),
